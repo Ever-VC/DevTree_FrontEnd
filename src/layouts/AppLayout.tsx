@@ -1,9 +1,21 @@
 import { Link, Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
+import { useQuery } from '@tanstack/react-query'
 import NavigationTabs from "../components/NavigationsTabs";
+import { getUser } from "../api/DevTreeAPI";
 
 export default function AppLayout() {
 
+    const { data, isLoading, error, isError } = useQuery({
+        queryFn: getUser,
+        queryKey: ['user'],
+        retry: 1,
+        refetchOnWindowFocus: false
+    })
+
+    console.log(data, isLoading, error, isError)
+    if (isLoading) return <div className="flex justify-center items-center h-screen"><h1 className="text-2xl text-slate-800">Cargando...</h1></div>
+    if (isError) return <div className="flex justify-center items-center h-screen"><h1 className="text-2xl text-slate-800">{error.message}</h1></div>
 
     return (
         <>
