@@ -1,21 +1,22 @@
 import { Link, Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
 import { useQuery } from '@tanstack/react-query'
+import { Navigate } from "react-router-dom";
 import NavigationTabs from "../components/NavigationsTabs";
 import { getUser } from "../api/DevTreeAPI";
 
 export default function AppLayout() {
 
-    const { data, isLoading, error, isError } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryFn: getUser,
         queryKey: ['user'],
         retry: 1,
         refetchOnWindowFocus: false
     })
 
-    console.log(data, isLoading, error, isError)
-    if (isLoading) return <div className="flex justify-center items-center h-screen"><h1 className="text-2xl text-slate-800">Cargando...</h1></div>
-    if (isError) return <div className="flex justify-center items-center h-screen"><h1 className="text-2xl text-slate-800">{error.message}</h1></div>
+    if (isLoading) return <div className="flex justify-center items-center h-screen">Cargando...</div>
+    if (isError) return <Navigate to="/auth/login" replace={true} />
+    if (!data) return <div className="flex justify-center items-center h-screen">No se encontró el usuario</div>    
 
     return (
         <>
